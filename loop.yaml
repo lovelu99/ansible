@@ -1,0 +1,15 @@
+---
+- name: Creating multiple user
+  hosts: dev
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: creating user
+      user:
+        name: "{{item}}"
+        state: present
+      loop:
+        - aayan
+        - aman
+        - ayyash

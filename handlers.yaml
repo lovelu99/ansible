@@ -1,0 +1,26 @@
+---
+- name: handlers sample
+  hosts: dev
+  become: yes
+  tasks:
+    - name: installing apache
+      yum:
+        name: httpd
+        state: present
+      notify: start apache
+
+    - name: copy html
+      copy:
+        src: index.html
+        dest: /var/www/html/
+      notify: restart apache
+
+  handlers:
+    - name: start apache
+      service:
+        name: httpd
+        state: started
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
