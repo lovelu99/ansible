@@ -1,0 +1,14 @@
+---
+- name: create s3 bucket using aws collection
+  hosts: local
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+  tasks:
+    - name: create s3 bucket
+      amazon.aws.s3_bucket:
+        name: lovelu-s3-bucket
+        state: present
+        region: us-east-2
+

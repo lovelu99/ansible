@@ -1,0 +1,56 @@
+---
+- name: Configure Apache with Jinja2 (Ubuntu)
+  hosts: all
+  become: yes
+  vars:
+    http_port: 81
+    server_name: example.com
+    document_root: /var/www/html
+    site_conf: "{{ server_name }}.conf"
+
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+   
+    - name: Remove Listen 80
+      lineinfile:
+        path: /etc/apache2/ports.conf
+        regexp: '^Listen\s+80\s*$'
+        state: absent
+      notify: Restart Apache
+
+    - name: Ensure Apache listens on port {{ http_port }}
+      lineinfile:
+        path: /etc/apache2/ports.conf
+        regexp: '^Listen\s+{{ http_port }}$'
+        line: "Listen {{ http_port }}"
+        insertafter: EOF
+      notify: Restart Apache
+
+    - name: Deploy vhost config
+      template:
+        src: templates/vhost.conf.j2
+        dest: "/etc/apache2/sites-available/{{ site_conf }}"
+        mode: "0644"
+      notify: Restart Apache
+
+    - name: Enable site
+      command: "a2ensite {{ site_conf }}"
+      args:
+        creates: "/etc/apache2/sites-enabled/{{ site_conf }}"
+      notify: Restart Apache
+
+    - name: Ensure Apache is running and enabled
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted

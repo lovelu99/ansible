@@ -2,6 +2,7 @@
 - name: handlers sample
   hosts: dev
   become: yes
+
   tasks:
     - name: installing apache
       yum:
@@ -12,7 +13,7 @@
     - name: copy html
       copy:
         src: index.html
-        dest: /var/www/html/
+        dest: /var/www/html/index.html
       notify: restart apache
 
   handlers:
@@ -20,6 +21,7 @@
       service:
         name: httpd
         state: started
+
     - name: restart apache
       service:
         name: httpd

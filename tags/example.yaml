@@ -1,0 +1,22 @@
+---
+- name: ansible tag example
+  hosts: dev
+  become: yes
+  tasks:
+    - name: installing apache
+      apt:
+        name: apache2
+        state: present
+      tags: apache
+    - name: installing git
+      apt:
+        name: git
+        state: present
+      tags: git
+    - name: creating a user
+      user:
+        name: thisisuser
+        state: present
+      tags: user
+
+      

@@ -1,0 +1,8 @@
+---
+- name: Installing packages, webserver and creating users using roles
+  hosts: dev
+  become: yes
+  roles:
+    - packages
+    - webserver
+    - users

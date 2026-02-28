@@ -1,0 +1,30 @@
+---
+- name: Install and configure Nginx on dynamic EC2 hosts
+  hosts: env_dev
+  become: yes
+  gather_facts: yes
+
+  tasks:
+
+    - name: Show hostname
+      debug:
+        msg: "Running on {{ inventory_hostname }}"
+
+    - name: Install nginx (Amazon Linux / RHEL)
+      dnf:
+        name: nginx
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Install nginx (Ubuntu)
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Start and enable nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes

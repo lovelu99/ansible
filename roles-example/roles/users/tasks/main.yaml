@@ -1,0 +1,8 @@
+---
+- name: create users
+  user:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - user1
+    - user2

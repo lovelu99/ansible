@@ -1,0 +1,9 @@
+---
+- name: installing packages
+  apt: 
+    name: "{{ item }}"
+    state: present
+  loop:
+    - git
+    - maven
+  
